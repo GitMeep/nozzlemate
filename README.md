@@ -38,6 +38,7 @@ Future planned features in no particular order
 - Iterative solution of actual stagnation/stagnation properties
 - Calculation of nozzle geometry from defined flow conditions
 - Clean up flow/thermodynamics related functions
+- Calculation of exhaust gas temperature and properties from reactants
 
 ## Development
 
