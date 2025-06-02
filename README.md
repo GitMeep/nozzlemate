@@ -20,13 +20,13 @@ python nozzlemate.py
 
 A rocket nozzle operates in a few different regimes, here listed from high ambient pressure to low:
 
-- No flow - ambient pressure is equal to the chamber pressure, thrust will be very low and exhaust hot since the internal energy hasn't been converted to kinetic energy (speed)
-- Unchoked - flow is locally subsonic throughout the nozzle, pressure is lowest at the throat and the exit pressure is equal to ambient pressure
-- Choked and overexpanded - flow is locally sonic at the throat and supersonic after. The pressure and speed continue to respectively fall and rise in the diverging section. At higher ambient pressures (back pressures) a shock wave will occur inside the expanding part of the nozzle such that the exit pressure is equal to ambient pressure. If the ambient pressure is low enough, this shockwave will occur outside the nozzle and exit pressure will be _lower_ than ambient.
+- No flow - ambient pressure is equal to the chamber pressure
+- Unchoked - flow is locally subsonic throughout the nozzle, pressure is lowest at the throat and the exit pressure is equal to ambient pressure. Thrust will be very low and exhaust hot since the internal energy hasn't been converted to kinetic energy (speed).
+- Choked and overexpanded - flow is locally sonic at the throat and supersonic after. The pressure and speed continue to respectively fall and rise in the diverging section. At higher ambient pressures (back pressures) a shock wave will occur inside the expanding part of the nozzle such that the exit pressure is equal to ambient pressure. This causes exit speed to drop to subsonic and performance will be bad. If the ambient pressure is low enough, this shockwave will occur outside the nozzle and exit flow will be supersonic and _lower pressure_ than ambient.
 - Choked and matched - flow is locally sonic at the throat and supersonic after, exit pressure is equal to ambient pressure with no shock waves in the nozzles. This is the optimal condition for the nozzle.
 - Choked and underexpanded - flow is locally sonic at the throat and supersonic after, exit pressure is higher than ambient. The exhaust plume will expand after leaving the nozzle. Performance is potentially left on the table.
 
-NozzleMate will print to the terminal whether the flow is choked or not, and whether it is overexpanded, underexpanded or matched as well as where the shockwave ocurs in case of overexpanded flow.
+NozzleMate will print to the terminal whether the flow is choked or not, and whether it is overexpanded, underexpanded or matched as well as where the shockwave ocurs in case of overexpanded flow. The thrust will also be calculated using the mass flow rate and exit speed.
 
 The graphs show a cross-section of the nozzle (the displayed cross-section is used to generate the rest of the graphs, but only the throat and exit areas really matter) as well as how the pressure, Mach number, flow speed, temperature and density vary throughout the nozzle. The ambient pressure is marked with a horizontal dashed line.
 
