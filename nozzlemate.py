@@ -67,13 +67,15 @@ def solve():
     exit_speed = flow.speed(sol.exit_pressure)
     exit_temperature = flow.temperature(sol.exit_pressure)
 
-    thrust = sol.massflow * exit_speed # N
+    thrust = sol.massflow * exit_speed + (sol.exit_pressure - ambient_pressure) * nozzle.exit_area # N
+    specific_impulse = thrust/(sol.massflow * g)
 
     print(f'Mass flow rate: {sol.massflow} kg/s')
     print(f'Exit pressure: {sol.exit_pressure} Pa')
     print(f'Isentropic exit pressure: {sol.isentropic_exit_pressure} Pa')
     print(f'Critical exit pressure: {sol.critical_exit_pressure} Pa')
-    print(f'Exit speed (specific impulse): {exit_speed} m/s ({exit_speed / g} s)') # I will never forgive whoever decided that specific impulse should be in seconds and not just exhaust speed
+    print(f'Exit speed: {exit_speed} m/s')
+    print(f'Specific impulse: {specific_impulse} s')
     print(f'Exit temperature: {exit_temperature} K')
     print(f'Thrust: {thrust/1000} kN')
 
