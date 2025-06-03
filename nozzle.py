@@ -1,8 +1,7 @@
-from math import isnan
 import numpy as np
 from scipy.optimize import root_scalar
 
-from relations import pres_to_mach_impl, mach_to_pres_impl, area_imp, massflow_imp, postshock_p0_impl
+from relations import postshock_p_impl, pres_to_mach_impl, mach_to_pres_impl, area_imp, massflow_imp, postshock_p0_impl
 
 class NozzleGeometry:
     def __init__(self, chamber_radius: float, chamber_length: float, throat_length: float, diverging_length: float, exit_radius: float, expansion_ratio: float):
@@ -52,7 +51,7 @@ class Flow:
 
     def mach_sub(self, flow_area: float, massflow: float) -> float:
         closure = lambda mach: self.area(mach, massflow) - flow_area
-        result = root_scalar(closure, method='bisect', bracket=(0.0000001, 1), x0=0.00001)
+        result = root_scalar(closure, method='bisect', bracket=(0.0000001, 1), x0=0.5)
         return result.root
 
     def pressure(self, mach: float):
@@ -66,6 +65,17 @@ class Flow:
 
     def temperature(self, pressure: float) -> float:
         return self.stagnation_temperature*(pressure/self.stagnation_pressure)**((self.gas.gamma-1)/self.gas.gamma)
+    
+    # shock relations
+    def postshock_stagnation_presure(self, preshock_mach: float) -> float:
+        return postshock_p0_impl(self.stagnation_pressure, preshock_mach, self.gas.gamma)
+    
+    def postshock_pressure(self, preshock_mach: float, preshock_pressure: float) -> float:
+        return postshock_p_impl(preshock_pressure, preshock_mach, self.gas.gamma)
+    
+    def post_shock_flow(self, preshock_mach: float):
+        new_stagnation_pressure = self.postshock_stagnation_presure(preshock_mach)
+        return Flow(self.gas, new_stagnation_pressure, self.stagnation_temperature)
 
 class Shock:
     def __init__(self, shock_mach: float, exit_mach: float, postshock_flow: Flow):
@@ -74,90 +84,86 @@ class Shock:
         self.postshock_flow = postshock_flow
 
 class FlowSolution:
-    def __init__(self, flow: Flow, geometry: NozzleGeometry, massflow: float, isentropic_exit_mach: float, isentropic_exit_pressure: float, exit_pressure: float, ambient_pressure: float, choked: bool, shock: Shock):
+    def __init__(self, flow: Flow, geometry: NozzleGeometry, massflow: float, critical_exit_pressure: float, isentropic_exit_pressure: float, exit_shock_exit_pressure: float, exit_pressure: float, ambient_pressure: float, shock: Shock):
         self.flow = flow
         self.geometry = geometry
         self.massflow = massflow
-        self.isentropic_exit_mach = isentropic_exit_mach
+        self.critical_exit_pressure = critical_exit_pressure
         self.isentropic_exit_pressure = isentropic_exit_pressure
+        self.exit_shock_exit_pressure = exit_shock_exit_pressure
         self.exit_pressure = exit_pressure
-        self.choked = choked
         self.ambient_pressure = ambient_pressure
         self.shock = shock
 
-def postshock_stagnation_presure(preshock_mach: float, preshock_flow: Flow) -> float:
-    return postshock_p0_impl(preshock_flow.stagnation_pressure, preshock_mach, preshock_flow.gas.gamma)
-
-def post_shock_flow(preshock_mach: float, preshock_flow: Flow) -> Flow:
-    new_stagnation_pressure = postshock_stagnation_presure(preshock_mach, preshock_flow)
-    return Flow(preshock_flow.gas, new_stagnation_pressure, preshock_flow.stagnation_temperature)
-
 def shock_mach_to_exit_area(mach: float, flow: Flow, ambient_pressure: float, massflow: float) -> float:
-    post_flow = post_shock_flow(mach, flow)
+    post_flow = flow.post_shock_flow(mach)
     exit_mach = post_flow.mach(ambient_pressure)
     return post_flow.area(exit_mach, massflow)
 
-def find_shock_mach(ambient_pressure: float, massflow: float, nozzle: NozzleGeometry, flow: Flow) -> tuple[float, float, Flow]:
-    tol = 0.000000001
-    mach = 1
-    stepsize = 1
-    while True:
-        postshock_flow = post_shock_flow(mach, flow)
-        exit_mach = postshock_flow.mach(ambient_pressure)
-        area = postshock_flow.area(exit_mach, massflow)
+def find_shock_mach(ambient_pressure: float, isentropic_exit_mach: float, massflow: float, nozzle: NozzleGeometry, flow: Flow) -> tuple[float, float, Flow]:
+    # max_mach might be outside the domain of the postshock_flow.mach function which will cause numpy to complain about taking the square root of a negative number.
+    np.seterr(invalid='ignore')
+    max_mach = isentropic_exit_mach
+    min_mach = 1
+    mach = (max_mach+min_mach)/2
 
-        nan_area = isnan(area)
-        if not nan_area and abs(area - nozzle.exit_area) < tol:
+    tolerance = 0.000000001
+    while True:
+        postshock_flow = flow.post_shock_flow(mach)
+        exit_mach = postshock_flow.mach(ambient_pressure)
+        area_diff = postshock_flow.area(exit_mach, massflow) - nozzle.exit_area
+
+        if abs(area_diff) < tolerance:
             break
 
-        if nan_area or area > nozzle.exit_area:
-            mach -= stepsize
-            stepsize /= 3
-
-        mach += stepsize
+        # area_diff might be NaN, but since comparing with NaN is always false, the next guess will be lower which moves back towards defined territory
+        # so it works out in our favor :D
+        # (this could be avoided by setting max_mach inside the domain of postshock_flow.mach, but I can't be bothered to work out what the upper bound
+        # of this function is right now (it will probably require some numerical root finding anyways so this seems like a fine way to do it))
+        if area_diff < 0:
+            min_mach = mach
+        else:
+            max_mach = mach
+        
+        mach = (min_mach + max_mach)/2
 
     return mach, exit_mach, postshock_flow
 
 def solve_nozzle_flow(nozzle: NozzleGeometry, flow: Flow, ambient_pressure: float):
-    critical_massflow = flow.massflow(nozzle.throat_area, 1)
+    critical_massflow = flow.massflow(nozzle.throat_area, 1) # mass flow rate when flow is choked
     critical_exit_mach = flow.mach_sub(nozzle.exit_area, critical_massflow)
-    critical_exit_pressure = flow.pressure(critical_exit_mach)
+    critical_exit_pressure = flow.pressure(critical_exit_mach) # the exit pressure below which flow will be choked
+
+    isentropic_exit_mach = flow.mach_sup(nozzle.exit_area, critical_massflow)
+    # the exit pressure at which and below which flow will be isentropic throughout the nozzle (the optimal exit pressure)
+    isentropic_exit_pressure = flow.pressure(isentropic_exit_mach)
+
+    # the exit pressure at which and above which (while below the isentropic exit pressure) shockwaves will occur inside the nozzle
+    exit_shock_exit_pressure = flow.postshock_pressure(isentropic_exit_mach, isentropic_exit_pressure)
+
+    # we assume the final massflow to be the critical (choked) mass flow rate. This is overwritten in case flow isn't choked.
+    final_massflow = critical_massflow
+    # also assume that exit pressure is ambient. This will be overwritten in case of underexpanded flow
+    exit_pressure = ambient_pressure
 
     shock = None
-    choked = ambient_pressure <= critical_exit_pressure
-    if choked:
-        final_massflow = critical_massflow
-        isentropic_exit_mach = flow.mach_sup(nozzle.exit_area, critical_massflow)
-        isentropic_exit_pressure = flow.pressure(isentropic_exit_mach)
-        
-        exit_mach = isentropic_exit_mach
+    if ambient_pressure >= critical_exit_pressure: # subsonic flow throughout nozzle, not choked
+        subsonic_exit_mach = flow.mach(ambient_pressure)
+        final_massflow = flow.massflow(nozzle.exit_area, subsonic_exit_mach) # override mass flow rate
+    elif ambient_pressure < critical_exit_pressure and ambient_pressure >= exit_shock_exit_pressure: # there is a shock is inside or at nozzle exit
+        shock_mach, postshock_exit_mach, postshock_flow = find_shock_mach(ambient_pressure, isentropic_exit_mach, final_massflow, nozzle, flow)
+        shock = Shock(shock_mach, postshock_exit_mach, postshock_flow)
+    else: # there is no shock wave in nozzle and flow is overexpanded, matched or underexpanded
         exit_pressure = isentropic_exit_pressure
-
-        if isentropic_exit_pressure < ambient_pressure: # flow is overexpanded
-            shock_mach, postshock_exit_mach, postshock_flow = find_shock_mach(ambient_pressure, final_massflow, nozzle, flow)
-
-            # when the backpressure is just a little higher than the isentropic exit pressure
-            # there sometimes seems to be some shockwave soltions that, followed by supersonic
-            # flow results in a matched pressure at the exit. Shockwaves should always make to
-            # downstream flow subsonic, so ignore any such "solutions".
-            if postshock_exit_mach < 1:
-                shock = Shock(shock_mach, postshock_exit_mach, postshock_flow)
-                if shock_mach < isentropic_exit_mach: # shock is inside the nozzle, calculate exit conditions with post-shock flow
-                    exit_pressure = ambient_pressure
-    else:
-        exit_pressure = ambient_pressure
-        final_massflow = flow.massflow(nozzle.exit_area, exit_pressure)
-        exit_mach = flow.mach_sub(nozzle.exit_area, final_massflow)
-        isentropic_exit_mach = exit_mach
 
     return FlowSolution(
         flow=flow,
         geometry=nozzle,
         massflow=final_massflow,
-        isentropic_exit_mach=isentropic_exit_mach,
+        critical_exit_pressure=critical_exit_pressure,
         isentropic_exit_pressure=isentropic_exit_pressure,
+        exit_shock_exit_pressure=exit_shock_exit_pressure,
         exit_pressure=exit_pressure,
         ambient_pressure=ambient_pressure,
-        choked=choked,
         shock=shock
     )

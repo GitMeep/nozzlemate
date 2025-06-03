@@ -8,9 +8,9 @@ g = 9.80665 # m*s⁻²
 # TODO: load gas and nozzle parameters from JSON files given as command line arguments
 
 # operating conditions
-chamber_pressure = 20640000 # Pa
-chamber_temperature = 3573.15 # K
-ambient_pressure = 500000 # Pa
+chamber_pressure = 20643000 # Pa
+chamber_temperature = 3589 # K
+ambient_pressure = 101325 # Pa
 
 # mechanical parameters
 exit_radius = 1.2192 # m
@@ -52,25 +52,18 @@ def solve():
     sol = solve_nozzle_flow(nozzle, flow, ambient_pressure=ambient_pressure)
     flow = sol.flow
 
-    if sol.choked:
-        print('Flow is choked')
-        if sol.isentropic_exit_pressure < ambient_pressure:
-            print('Flow is overexpanded')
-            if sol.shock is not None:
-                flow = sol.shock.postshock_flow
-                if sol.shock.shock_mach < sol.isentropic_exit_mach: # Shock is inside nozzle
-                    print('Warning, shock inside nozzle.')
-                elif sol.shock.shock_mach == sol.isentropic_exit_mach:
-                    print('Shock is at the nozzle exit')
-                else:
-                    print('Shock is outside nozzle')
-        elif sol.isentropic_exit_pressure > ambient_pressure:
-            print('Flow is underexpanded. You\'re loosing performance')
-        else: # very unlikely
-            print('Nozzle is perfectly matched!')
-    else:
-        print('Warning, your flow is not choked!')
-
+    if ambient_pressure >= sol.critical_exit_pressure: # unchoked, subsonic flow
+        print('Flow is not choked')
+    elif ambient_pressure < sol.critical_exit_pressure and ambient_pressure >= sol.exit_shock_exit_pressure: # choked flow, shockwave in nozzle
+        print('Shockwave in nozzle or at exit')
+        flow = sol.shock.postshock_flow # the exit conditions below should be calculated with the post-shock flow instead
+    elif ambient_pressure < sol.exit_shock_exit_pressure and ambient_pressure > sol.isentropic_exit_pressure: # choked, overexpanded flow, shockwave outside nozzle
+        print('Overexpanded flow')
+    elif ambient_pressure == sol.isentropic_exit_pressure: # perfectly matched
+        print('Perfectly matched! 🎉')
+    else: # underexpanded
+        print('Underexpanded flow, you might be losing performance')
+    
     exit_speed = flow.speed(sol.exit_pressure)
     exit_temperature = flow.temperature(sol.exit_pressure)
 
@@ -78,14 +71,16 @@ def solve():
 
     print(f'Mass flow rate: {sol.massflow} kg/s')
     print(f'Exit pressure: {sol.exit_pressure} Pa')
-    print(f'Exit speed (specific impulse): {exit_speed} m/s ({exit_speed / g} s)')
+    print(f'Isentropic exit pressure: {sol.isentropic_exit_pressure} Pa')
+    print(f'Critical exit pressure: {sol.critical_exit_pressure} Pa')
+    print(f'Exit speed (specific impulse): {exit_speed} m/s ({exit_speed / g} s)') # I will never forgive whoever decided that specific impulse should be in seconds and not just exhaust speed
     print(f'Exit temperature: {exit_temperature} K')
     print(f'Thrust: {thrust/1000} kN')
 
     fig, (nozzle_ax, pressure_ax, mach_ax, speed_ax, temp_ax, density_ax) = plt.subplots(6,1, sharex=True)
-
     fig.set_figheight(10)
 
+    print('Generating graphs')
     visualize_solution(
         sol=sol,
         nozzle_ax=nozzle_ax,
@@ -94,13 +89,11 @@ def solve():
         speed_ax=speed_ax,
         temp_ax=temp_ax,
         density_ax=density_ax,
-        resolution=1000
+        resolution=500
     )
 
     density_ax.set_xlabel('Length [m]')
-
     plt.show()
-
 
 def main():
     solve()

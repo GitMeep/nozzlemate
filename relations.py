@@ -3,5 +3,6 @@ from numpy import sqrt
 area_imp=lambda M,dm,rho_0,T_0,c_p,gamma: (0.707106781186548*dm*(T_0*c_p*(1 - 1/(M**2*((1/2)*gamma - 1/2) + 1)))**(-0.5)*(M**2*((1/2)*gamma - 1/2) + 1)**(1/(gamma - 1))/rho_0)
 massflow_imp=lambda M,A,rho_0,T_0,c_p,gamma: (1.41421356237309*2.0**(1/(gamma - 1))*A*rho_0*sqrt(M**2*T_0*c_p*(gamma - 1.0)/(M**2*gamma - M**2 + 2.0))*(M**2*gamma - M**2 + 2.0)**(-1/(gamma - 1)))
 postshock_p0_impl=lambda p_0u,M_u,gamma: (p_0u*((gamma + 1)/(2*M_u**2*gamma - gamma + 1))**(1/(gamma - 1))*(M_u**2*(gamma + 1)/(M_u**2*(gamma - 1) + 2))**(gamma/(gamma - 1)))
+postshock_p_impl=lambda p_u,M_u,gamma: (p_u*(2*M_u**2*gamma - gamma + 1)/(gamma + 1))
 mach_to_pres_impl=lambda M,p_0,gamma: (2**(gamma/(gamma - 1))*p_0*(M**2*gamma - M**2 + 2)**(-gamma/(gamma - 1)))
 pres_to_mach_impl=lambda p,p_0,gamma: (sqrt(((2**(gamma/(gamma - 1))*p_0/p)**((gamma - 1)/gamma) - 2)/(gamma - 1)))

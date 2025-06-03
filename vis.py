@@ -31,17 +31,21 @@ def visualize_solution(sol: FlowSolution, nozzle_ax: plt.Axes, pressure_ax: plt.
 
     throat_index = int(resolution/geo.nozzle_length*(geo.chamber_length+geo.throat_length))
 
-    M_sub = np.vectorize(lambda a: flow.mach_sub(a, sol.massflow))(a)
-    M_sup = np.vectorize(lambda a: flow.mach_sup(a, sol.massflow))(a[throat_index:])
+    mach_sup_vector = np.vectorize(lambda a: flow.mach_sup(a, sol.massflow))
+    mach_sub_vector = np.vectorize(lambda a: flow.mach_sub(a, sol.massflow))
 
-    # if the flow is choked, we assume supersonic flow in the entire diverging section
-    if sol.choked:
-        M = np.concatenate((M_sub[:throat_index], M_sup))
-    else:
-        M = M_sub
+    if sol.ambient_pressure == sol.flow.stagnation_pressure: # no flow if ambient pressure is equal to stagnation pressure
+        M = np.zeros_like(x)
+    elif sol.ambient_pressure >= sol.critical_exit_pressure: # subsonic flow if ambient pressure is above or equal to critical exit pressure
+        M = mach_sub_vector(a)
+    if sol.ambient_pressure < sol.critical_exit_pressure: # supersonic flow after nozzle if ambient pressure is below critical exit pressure
+        M_sub = mach_sub_vector(a[:throat_index])
+        M_sup = mach_sup_vector(a[throat_index:])
+        M = np.concatenate((M_sub, M_sup))
+        
 
-    # if there is no shock, or it is outside the nozzle calculate values with the normal isentropic flow
-    if sol.shock is None or sol.shock.shock_mach > sol.isentropic_exit_mach:
+    # if there is no shock inside the nozzle or at the exit, calculate values with the normal isentropic flow
+    if sol.shock is None:
         p = pressure(M, flow)
         u = speed(M, flow)
         t = temperature(M, flow)

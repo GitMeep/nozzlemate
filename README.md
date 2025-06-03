@@ -37,9 +37,8 @@ Future planned features in no particular order
 - Load nozzle and gas parameters from files
 - Iterative solution of actual stagnation/stagnation properties
 - Calculation of nozzle geometry from defined flow conditions
-- Clean up flow/thermodynamics related functions
 - Calculation of exhaust gas temperature and properties from reactants
 
 ## Development
 
-Certain flow-related functions are derived ahead-of-time with SymPy and used to generate Python functions. The derivation and generation happens in `codegen.py` and the generated functions end up in `relations.py`. These functions ar egenerally wrapped in other files to provide type hinting a bit nicer interface. (Some flow-related functions implemented directly in Python are also strewn about other files. This needs some cleanup.)
+Certain flow-related functions are derived ahead-of-time with SymPy and used to generate Python functions. The derivation and generation happens in `codegen.py` and the generated functions end up in `relations.py`. These functions ar egenerally wrapped in other files to provide type hinting a bit nicer interface.
