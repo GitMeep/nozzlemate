@@ -1,3 +1,0 @@
-# Nozzle theory
-
-TODO

@@ -30,6 +30,8 @@ NozzleMate will print to the terminal whether the flow is choked or not, and whe
 
 The graphs show a cross-section of the nozzle (the displayed cross-section is used to generate the rest of the graphs, but only the throat and exit areas really matter) as well as how the pressure, Mach number, flow speed, temperature and density vary throughout the nozzle. The ambient pressure is marked with a horizontal dashed line.
 
+If you want a better understanding of the theory, head over to the [theory writeup](./theory/README.md) (still work-in-progress).
+
 ## Planned features and todo
 
 Future planned features in no particular order

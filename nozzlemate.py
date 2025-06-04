@@ -22,7 +22,7 @@ throat_length = 0.0 # m
 diverging_length = 0.2 # m
 
 # fluid parameters
-heat_cap_ratio = 1.33 # γ (gamma)
+heat_cap_ratio = 1.3 # γ (gamma)
 isobar_spec_heat_cap = 2000 # J*kg⁻¹*K⁻¹
 molar_mass = 0.01801528 # kg*mol⁻¹
 
