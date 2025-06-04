@@ -43,4 +43,4 @@ Future planned features in no particular order
 
 ## Development
 
-Certain flow-related functions are derived ahead-of-time with SymPy and used to generate Python functions. The derivation and generation happens in `codegen.py` and the generated functions end up in `relations.py`. These functions ar egenerally wrapped in other files to provide type hinting a bit nicer interface.
+Certain flow-related functions are derived ahead-of-time with SymPy and used to generate Python functions. The derivation and generation happens in `codegen.py` and the generated functions end up in `relations.py`. These functions are generally wrapped in other files to provide type hinting a bit nicer interface.

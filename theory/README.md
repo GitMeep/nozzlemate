@@ -42,7 +42,7 @@ We mainly care about the following variables:
 
 - $p$: pressure
 - $T$: absolute temperature
-- $\rho$: density (this greek letter is called "rho")
+- $\rho$: density (this greek letter is called "rho" pronounced like "row")
 - $u$: speed
 - $A$: area
 
