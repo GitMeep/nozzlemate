@@ -41,14 +41,12 @@ We now have $e + pv$ on both sides. Remember, this is the definition of specific
 
 $$h_1 + \frac{u_1^2}{2} = h_2 + \frac{u_2^2}{2}$$
 
-From this we can see that energy can exists either as enthalpy (internal energy + pressure-volume energy) or kinetic energy.
+From this we can see that energy in the flow can exist either as enthalpy (internal energy + pressure-volume energy) or kinetic energy.
 
 In an calorically perfect gas, the heat capacities are constant, so the specific enthalpy is simply given by $h = c_p T$ where $c_p$ is the specific heat capacity at constant pressure. Thus, we can substitute the enthalpy on each side and simplify to arrive at our final equation relating temperature and speed:
 
-$$
-c_p T_1 + \frac{u_1^2}{2} = c_p T_2 + \frac{u_2^2}{2} \Rightarrow \\
-\boxed{T_1 + \frac{u_1^2}{2 c_p} = T_2 + \frac{u_2^2}{2 c_p}}
-$$
+$$c_p T_1 + \frac{u_1^2}{2} = c_p T_2 + \frac{u_2^2}{2} \Rightarrow$$
+$$\boxed{T_1 + \frac{u_1^2}{2 c_p} = T_2 + \frac{u_2^2}{2 c_p}}$$
 
 This equation is true for general steady adiabatic quasi-1D flow of calorically perfect gas with no body forces.
 

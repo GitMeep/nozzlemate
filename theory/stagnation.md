@@ -6,20 +6,16 @@ $$T_1 + \frac{u_1^2}{2 c_p} = T_2 + \frac{u_2^2}{2 c_p}$$
 
 In this chapter, we will derive the so-called stagnation properties, which are useful reference quantities that stay constant throughout an isentropic flow. They are derived by imagining what happens when a flow slows down to zero speed from some other speed upstream (of course this wouldn't actually be possible in a real pipe; it is just a mathematical trick). To accomplish this, we set $u_2 = $ and solve for $T_2$, which we rename to $T_0$ to specify that it is the _stagnation temperature_. We also remove the 1 subscript:
 
-$$
-T + \frac{u^2}{2 c_p} = T_0 + \frac{0^2}{2 c_p} \Rightarrow \\
-\boxed{T_0 = T + \frac{u^2}{2 c_p}}
-$$
+$$T + \frac{u^2}{2 c_p} = T_0 + \frac{0^2}{2 c_p} \Rightarrow$$
+$$\boxed{T_0 = T + \frac{u^2}{2 c_p}}$$
 
 Thinking about what this means in terms of enthalpy, we see that the stagnation temperature is the temperature that the gas would reach if all energy in the flow was converted to enthalpy (since there is no kinetic energy when the gas is still).
 
 If we assume that the flow is not just adiabatic, but also isentropic, we can relate the stagnation temperature to the _stagnation density_ and _stagnation pressure_ through the isentropic relations. To do this, we first transform the stagnation temperature above into a ratio so it fits better into the relations:
 
-$$
-1 = \frac{T}{T_0} + \frac{u^2}{2 c_p T_0} \Rightarrow \\
-\frac{T}{T_0} = 1 - \frac{u^2}{2 c_p T_0} \Rightarrow \\
-\frac{T_0}{T} = \left(1 - \frac{u^2}{2 c_p T_0}\right)^{-1}
-$$
+$$1 = \frac{T}{T_0} + \frac{u^2}{2 c_p T_0} \Rightarrow$$
+$$\frac{T}{T_0} = 1 - \frac{u^2}{2 c_p T_0} \Rightarrow$
+$$\frac{T_0}{T} = \left(1 - \frac{u^2}{2 c_p T_0}\right)^{-1}$$
 
 Then we substitute that into the relevant isentropic relations, replacing the subscript 1 with 0, and removing subscript 2:
 

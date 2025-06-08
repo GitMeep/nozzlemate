@@ -66,12 +66,10 @@ $$-\frac{1}{1 - \gamma} = \left(1 - \frac{u^2}{2 c_p T_0}\right)^{\frac{1}{1 - \
 
 We then simplify the exponent:
 
-$$
-\frac{1}{1 - \gamma} + \frac{\gamma}{\gamma - 1} \Rightarrow \\
-\frac{1}{1 - \gamma} - \frac{\gamma}{1 - \gamma} \Rightarrow \\
-\frac{1 - \gamma}{1 - \gamma} \Rightarrow \\
-1
-$$
+$$\frac{1}{1 - \gamma} + \frac{\gamma}{\gamma - 1} \Rightarrow$$
+$$\frac{1}{1 - \gamma} - \frac{\gamma}{1 - \gamma} \Rightarrow$$
+$$\frac{1 - \gamma}{1 - \gamma} \Rightarrow$$
+$$1$$
 
 We see that the exponent is $1$, so we can just remove it to get:
 

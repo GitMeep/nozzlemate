@@ -26,10 +26,8 @@ This power $\gamma$ is the so-called "ratio of specific heats"[^heat_cap_ratio].
 
 Of course, volume is an extensive property. Let us rewrite it in terms of density by multiplying the volume fraction by $\frac{m}{m}$:
 
-$$
-\frac{p_2}{p_1} = \left(\frac{V_1}{V_2}\frac{m}{m}\right)^\gamma \Leftrightarrow \\
-\boxed{\frac{p_2}{p_1} = \left(\frac{\rho_2}{\rho_1}\right)^\gamma}
-$$
+$$\frac{p_2}{p_1} = \left(\frac{V_1}{V_2}\frac{m}{m}\right)^\gamma \Rightarrow$$
+$$\boxed{\frac{p_2}{p_1} = \left(\frac{\rho_2}{\rho_1}\right)^\gamma}$$
 
 Later, we will be relating the temperature and speed, so let us see how density and pressure depend on temperature. Let us solve for density in the intensive ideal gas law:
 
@@ -45,10 +43,8 @@ $$\frac{p_2}{p_1} = \left(\frac{T_1}{T_2}\right)^\gamma \left(\frac{p_2}{p_1}\ri
 
 And then move the pressure ratio on the right-hand side to the left and combine it with the other pressure ratio:
 
-$$
-\frac{p_2}{p_1} \left(\frac{p_2}{p_1}\right)^{-\gamma} = \left(\frac{T_1}{T_2}\right)^\gamma \Leftrightarrow \\
-\left(\frac{p_2}{p_1}\right)^{1-\gamma} = \left(\frac{T_1}{T_2}\right)^\gamma
-$$
+$$\frac{p_2}{p_1} \left(\frac{p_2}{p_1}\right)^{-\gamma} = \left(\frac{T_1}{T_2}\right)^\gamma \Rightarrow$$
+$$\left(\frac{p_2}{p_1}\right)^{1-\gamma} = \left(\frac{T_1}{T_2}\right)^\gamma$$
 
 We then raise both sides to the $\frac{1}{1 - \gamma}$ power to free the pressure ratio from its exponent prison:
 

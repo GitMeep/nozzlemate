@@ -6,11 +6,9 @@ $$\rho = \rho_0 \left(1 - \frac{u^2}{2 c_p T_0}\right)^\frac{1}{\gamma - 1}$$
 
 And inserting this into the conservsation of mass equation before solving for area:
 
-$$
-\dot m = \rho u A \\
-\dot m = \left(1 - \frac{u^2}{2 c_p T_0}\right)^\frac{1}{\gamma - 1} \rho_0 u A \Rightarrow \\
-A = \frac{\dot m}{\rho_0 u} \left(1 - \frac{u^2}{2 c_p T_0}\right)^\frac{1}{1 - \gamma}
-$$
+$$\dot m = \rho u A$$
+$$\dot m = \left(1 - \frac{u^2}{2 c_p T_0}\right)^\frac{1}{\gamma - 1} \rho_0 u A \Rightarrow$$
+$$A = \frac{\dot m}{\rho_0 u} \left(1 - \frac{u^2}{2 c_p T_0}\right)^\frac{1}{1 - \gamma}$$
 
 Here we get our first glimpse of why CD-nozzles are shaped like they are. The speed appears in two places and is raised to all sorts of powers. This just screams "i have a minimum", and looking at the graph, we se that it in fact does have a minimum:
 
