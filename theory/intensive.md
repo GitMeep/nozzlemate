@@ -12,7 +12,7 @@ Intensive properties can often be made by dividing two extensive properties by e
 - Density: $\rho = \frac{m}{V}$
 - Specific volume: $v = \frac{V}{m} = \frac{1}{\rho}$
 - Specific internal energy: $e = \frac{U}{m}$
-- Specific enthalpy: $h = \frac{H}{m}$
+- Specific enthalpy: $h = \frac{H}{m} = e + pv$
 - Specific heat capacity: $c = \frac{C}{m}$
 
 As can be seen, when dividing an extensive property by mass we get a "specific" version. The symbol for these is often the lower-case of the symbol of the extensive counterpart. Note that we use $e$ for the specific internal energy instead of $u$, to avoid confusing it with the $x$-component of velocity!

@@ -1,0 +1,3 @@
+# Normal shocks
+
+TODO

@@ -6,7 +6,7 @@ This program is based on the steady quasi-1D isentropic flow theory of nozzles. 
 
 This writeup is mostly based on the first few chapters of [The International Student Edition of Modern Compressible Flow by John D. Anderson](https://isbnsearch.org/isbn/9781260570823) and the excellent [Compressible Flow playlist](https://www.youtube.com/playlist?list=PLxT-itJ3HGuVt4A8cwi4WdUudTbh1TQVV) by JoshTheEngineer.
 
-It is assumed that the reader has a decent understanding of _force_, _pressure_, _absolute temperature_, _density_, _amount of substance_, _molar mass_, and the _ideal gas law_ as well as _derivatives_. If you don't, there are lots of great resources online, I'm sure you can find them.
+It is assumed that the reader has a decent understanding of _force_, _work_, _pressure_, _absolute temperature_, _density_, _amount of substance_, _molar mass_, _enthalpy_, the _ideal gas law_ and the _first law of thermodynamics_ as well as being fairly comfortable with _derivatives_ and the _algebra_ of fractions and exponents. If you don't, there are lots of great resources online, I'm sure you can find them.
 
 ## Theory overview
 
